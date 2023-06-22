@@ -3,6 +3,25 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+.actionsDiv{
+  display: flex;
+}
+
+.actionDiv{
+  border: 5px dotted black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  padding: 5px;
+}
+
+.responseDiv{
+  border: 5px solid gray;
+}
+
 a {
   color: #00B7FF;
 }
