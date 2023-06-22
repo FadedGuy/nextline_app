@@ -1,0 +1,41 @@
+form(id="hwForm")
+  label(for="title") Title:
+  input(type="text", id="title", name="title", required)
+
+  label(for="description") Description:
+  textarea(id="description", name="description", required)
+
+  label(for="completionStatus") Completion Status:
+  select(id="completionStatus", name="completionStatus", required)
+    option(value="Pending") Pending
+    option(value="In Progress") In Progress
+    option(value="Completed") Completed
+
+  label(for="dueDate") Due Date:
+  input(type="date", id="dueDate", name="dueDate", required)
+
+  label(for="visibility") Visibility:
+  select(id="visibility", name="visibility", required)
+    option(value="Public") Public
+    option(value="Private") Private
+    option(value="Shared") Shared
+
+  label(for="sharedWith") Shared With:
+  input(type="text", id="sharedWith", name="sharedWith")
+
+  // label(for="comments") Comments:
+  // textarea(id="comments", name="comments")
+
+  label(for="createdBy") Created By:
+  input(type="text", id="createdBy", name="createdBy", required)
+
+  label(for="responsible") Responsible:
+  input(type="text", id="responsible", name="responsible")
+
+  // label(for="tags") Tags:
+  // input(type="text", id="tags", name="tags")
+
+  label(for="file") File:
+  input(type="file", id="file", name="file")
+
+  button(type="submit") Create Homework

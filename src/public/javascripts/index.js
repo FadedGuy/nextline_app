@@ -1,6 +1,17 @@
 const responseLabel = document.getElementById('responseLabel');
 const username = document.getElementById('username');
 
+// Override submit and prevent redirection
+document.getElementById('hwForm').addEventListener('submit', function(event){
+    event.preventDefault();
+    const form = document.getElementById('hwForm');
+    const formData = new FormData(form);
+
+    fetch('/postHw', {method: 'POST', body: formData, headers:{'Content-Type':'application/x-www-form-urlencoded'}});
+
+    return false;
+});
+
 // Main handler for button click
 function handleButtonClick(action){
     responseLabel.textContent = "";

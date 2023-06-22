@@ -125,6 +125,57 @@ router.get('/getAllInformation', (req, res) => {
 });
 
 /**
+ * POST
+ * Posts a new homework with the given information
+ */
+router.post('/postHw', (req, res) => {
+  const { title, description, completionStatus, dueDate, visibility, sharedWith, createdBy, responsible, file } = req.body;
+  console.log(req.body);
+  
+  const columnValuePairs = [];
+  if (title) columnValuePairs.push(`title = '${title}'`);
+  if (description) columnValuePairs.push(`description = '${description}'`);
+  if (completionStatus) columnValuePairs.push(`completionStatus = '${completionStatus}'`);
+  if (dueDate) columnValuePairs.push(`dueDate = '${dueDate}'`);
+  if (visibility) columnValuePairs.push(`visibility = '${visibility}'`);
+  if (createdBy) columnValuePairs.push(`createdBy = '${createdBy}'`);
+  if (responsible) columnValuePairs.push(`responsible = '${responsible}'`);
+  if (file) columnValuePairs.push(`file = '${file}'`);
+
+  const query = `INSERT INTO homework SET ${columnValuePairs.join(', ')}`;
+
+  // pool.query(query, (error, results) => {
+  //   if (error) {
+  //     console.error('Unable to run homework query:', error);
+  //     res.status(400).send("Unable to process query");
+  //     return;
+  //   }
+    
+  //   // If visibility is 'Shared', insert sharedWith if existent
+  //   if (visibility === 'Shared' && sharedWith) {
+  //     const userIds = sharedWith.split(',').map(userId => userId.trim());
+      
+  //     const sharedUsersValues = userIds.map(userId => `(${results.insertId}, ${userId})`);
+      
+  //     const sharedWithQuery = `INSERT INTO homework_shared_users (homeworkId, userId) VALUES ${sharedUsersValues.join(', ')}`;
+      
+  //     pool.query(sharedWithQuery, (error, results) => {
+  //       if (error) {
+  //         console.error('Unable to run shared users query:', error);
+  //       } else {
+  //         console.log('Form submitted successfully');
+  //         res.send("Nice");
+  //       }
+  //     });
+  //   } else {
+  //     console.log('Form submitted successfully');
+  //     res.send("Nice");
+  //   }
+  // });
+  res.send("Buce");
+});
+
+/**
  * DELETE
  * Deletes a homework given its id
  */
