@@ -3,6 +3,9 @@ extends layout
 block content
   label(for="username") Username: 
   input#username 
+  p
+  label(for="hwId") Homework Id:
+  input(type="number" placeholder="Hw ID" id="hwId")
 
   h2 API Button Actions
   div.actionsDiv
@@ -12,7 +15,9 @@ block content
     div.actionDiv
       p GET Informacion completa de una tarea
       button(type="button" onclick="handleButtonClick('allInformation')") Click here
-      input(type="number" placeholder="Hw ID" id="hwId")
+    div.actionDiv
+      p DELETE Homework
+      button(type="button" onclick="handleButtonClick('deleteHw')") Click here
 
   div(class="responseDiv")
     label(for="responseLabel") Response from latest API call: 

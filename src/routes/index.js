@@ -124,4 +124,29 @@ router.get('/getAllInformation', (req, res) => {
   });
 });
 
+/**
+ * DELETE
+ * Deletes a homework given its id
+ */
+router.delete('/deleteHw', (req, res) => {
+  let hwId = req.query.id;
+  if (!hwId) {
+    res.status(400).send('Unable to run query');
+  }
+
+  query = `
+    DELETE FROM homework WHERE id=${parseInt(hwId)};
+  `;
+
+  pool.query(query, (error, results) => {
+    if (error) {
+      console.error("Unable to run query: ", error);
+      res.status(400).send('Unable to execute query');
+    } else {
+      console.log(results);
+      res.send(results);
+    }
+  });
+});
+
 module.exports = router;

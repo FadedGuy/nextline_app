@@ -6,19 +6,21 @@ function handleButtonClick(action){
     responseLabel.textContent = "";
     switch(action){
         case 'briefInformation':
-            briefInformation()
+            briefInformation();
             break;
         case 'allInformation':
-            allInformation()
+            allInformation();
             break;
-        
+        case 'deleteHw':
+            deleteHw();
+            break;
         default: 
             console.error("Unknown action: ", action);
             break;
     }
 }
 
-async function fetchInformation(uri){
+async function getInformation(uri){
     try{
         const response = await fetch(uri);
         const data = await response.json();
@@ -30,8 +32,20 @@ async function fetchInformation(uri){
     }
 }
 
+async function deleteInformation(uri){
+    try{
+        const response = await fetch(uri, {method: 'DELETE'}); 
+        const data = await response;
+        // console.log(data);
+        return data;
+    } catch(err){
+        console.log(err);
+        return undefined;
+    }
+}
+
 async function briefInformation(){
-    const res = await fetchInformation(`/getBriefInformation?username=${username.value}`);
+    const res = await getInformation(`/getBriefInformation?username=${username.value}`);
     if(res === undefined){
         responseLabel.textContent = `Error processing query`;
         return;
@@ -67,7 +81,7 @@ async function allInformation(){
         return;
     }
     
-    const res = await fetchInformation(`/getAllInformation?id=${hwId}`)
+    const res = await getInformation(`/getAllInformation?id=${hwId}`)
     if(res === undefined){
         responseLabel.textContent = `Error processing query`;
         return;
@@ -130,4 +144,21 @@ async function allInformation(){
     cardsContainer.appendChild(card);
 
     console.log(mergedSharedWith);
+}
+
+async function deleteHw(){
+    console.log("Hi there butch");
+    const hwId = document.getElementById('hwId').value;
+    if(hwId === ''){
+        responseLabel.textContent = "No id provided!"
+        return;
+    }
+
+    const res = await deleteInformation(`/deleteHw?id=${hwId}`);
+    if(res === undefined){
+        responseLabel.textContent = `Error processing query`;
+        return;
+    }
+
+    responseLabel.textContent = `Successful deletion of homework with hwId ${hwId}`;
 }

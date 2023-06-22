@@ -16,3 +16,4 @@ Optimize queries
 
 ISSUES:
 Comment createdBy user is shown as Object and not at User.toJson()
+When the query is successful but is empty it should handle that error

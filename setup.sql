@@ -63,7 +63,7 @@ INSERT INTO homework(title, description, completionStatus, dueDate, visibility, 
 CREATE TABLE homework_shared_users (
     homeworkId INT NOT NULL,
     userId INT NOT NULL,
-    FOREIGN KEY (homeworkId) REFERENCES homework(id),
+    FOREIGN KEY (homeworkId) REFERENCES homework(id) ON DELETE CASCADE,
     FOREIGN KEY (userId) REFERENCES users(id),
     PRIMARY KEY (homeworkId, userId)
 );
@@ -76,8 +76,8 @@ INSERT INTO homework_shared_users (homeworkId, userId) VALUES (2, 3);
 CREATE TABLE homework_tags (
   homeworkId INT,
   tagId INT,
-  FOREIGN KEY (homeworkId) REFERENCES homework(id),
-  FOREIGN KEY (tagId) REFERENCES tag(id)
+  FOREIGN KEY (homeworkId) REFERENCES homework(id) ON DELETE CASCADE,
+  FOREIGN KEY (tagId) REFERENCES tag(id)  
 );
 
 -- Add some tags to biology test for user 3
@@ -93,7 +93,7 @@ CREATE TABLE comments (
   homeworkId INT NOT NULL,
 
   FOREIGN KEY (createdBy) REFERENCES users(id),
-  FOREIGN KEY (homeworkId) REFERENCES homework(id)
+  FOREIGN KEY (homeworkId) REFERENCES homework(id) ON DELETE CASCADE
 );
 
 -- Add a couple of default comments
