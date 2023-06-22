@@ -32,6 +32,7 @@ const EVisibility = Object.freeze({
  * Note: The createdBy field can only be set once
  */
 class Homework{
+    #id;
     #title;
     #description;
     #completionStatus;
@@ -44,10 +45,11 @@ class Homework{
     #tags;
     #file;
 
-    constructor(title, description, completionStatus, dueDate, visibility, 
+    constructor(id, title, description, completionStatus, dueDate, visibility, 
                 createdBy, sharedWith = [], comments = [], responsible = null, 
                 tags = [], file = null) {
-
+        
+        this.setId(id);
         this.setTitle(title);
         this.setDescription(description);
         this.setCompletionStatus(completionStatus);
@@ -61,6 +63,13 @@ class Homework{
         this.setFile(file);
     }
 
+    getId() {
+        return this.#id;
+    }
+
+    setId(id) {
+        this.#id = id;
+    }
 
     getTitle() {
         return this.#title;

@@ -4,12 +4,22 @@
  * helpful methods
  */
 class Tags{
+    #id;
     #name;
     #description;
 
-    constructor(name, description){
+    constructor(id, name, description){
+        this.setId(id);
         this.setName(name);
         this.setDescription(description);
+    }
+
+    getId(){
+        return this.#id;
+    }
+
+    setId(id) {
+        this.#id = id;
     }
 
     getName(){

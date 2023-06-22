@@ -14,6 +14,10 @@ class User{
         this.#username = username;
         this.#email = email;
         this.#name = name;
+        
+        if(!(isAdmin instanceof Boolean)){
+            console.error('Invalid isAdmin value. Expected instance of Boolean')
+        }
         this.#isAdmin = isAdmin;
     }
 

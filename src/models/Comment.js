@@ -7,16 +7,26 @@ const User = require('./User');
  * helpful methods
  */
 class Comment{
+    #id;
     #title;
     #content;
     #createdAt;
     #createdBy;
 
-    constructor(title, content, createdAt, createdBy){
+    constructor(id, title, content, createdAt, createdBy){
+        this.setId(id);
         this.setTitle(title);
         this.setContent(content);
         this.setCreatedAt(createdAt);
         this.setCreatedBy(createdBy);
+    }
+
+    getId(){
+        return this.#id;
+    }
+
+    setId(id){
+        this.#id = id;
     }
 
     getTitle(){
