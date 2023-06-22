@@ -36,6 +36,17 @@ class User{
     getAdmin(){
         return this.#isAdmin;
     }
+
+    // Jsonifies the fields of the class
+    toJson(){
+        return {
+            id: this.#id,
+            username: this.#username,
+            email: this.#email,
+            name: this.#name,
+            isAdmin: this.#isAdmin
+        };
+    }
 }
 
 module.exports = User

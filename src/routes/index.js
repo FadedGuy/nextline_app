@@ -13,9 +13,9 @@ router.get('/', function(req, res, next) {
   comment = new Comment("Title", "This is a comment", dueDate, user);
 
   const hw = new Homework("Title", "Description", "Pending", dueDate, "Public", 
-                    user, [user], [comment]);
+                    user, [user, user, user], [comment]);
 
-  console.log(hw.getComments());
+  console.log(hw.toJson());
   res.render('index', { title: 'Express' });
 });
 

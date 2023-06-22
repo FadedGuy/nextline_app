@@ -10,3 +10,4 @@ Change console.error in type verification for throw error and handle
 Can a comment be eliminated?
 
 Typechecking available except for string or int types
+Comment createdBy user is shown as Object and not at User.toJson()

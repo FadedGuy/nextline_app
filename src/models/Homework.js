@@ -196,6 +196,23 @@ class Homework{
     setFile(file) {
         this.#file = file;
     }
+
+    // Jsonifies the fields of the class
+    toJson(){
+        return {
+            title: this.#title,
+            description: this.#description,
+            completionStatus: this.#completionStatus,
+            dueDate: this.#dueDate,
+            visibility: this.#visibility,
+            sharedWith: this.#sharedWith.map(user => user.toJson()),
+            comments: this.#comments.map(comment => comment.toJson()),
+            createdBy: this.#createdBy.toJson(),
+            responsible: this.#responsible,
+            tags: this.#tags.map(tag => tag.toJson()),
+            file: this.#file
+        };
+    }
 }
 
 module.exports = Homework

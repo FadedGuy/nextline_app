@@ -58,6 +58,16 @@ class Comment{
 
         this.#createdBy = createdBy;
     }
+
+    // Jsonifies the fields of the class
+    toJson(){
+        return {
+            title: this.#title,
+            content: this.#content,
+            createdAt: this.#createdAt,
+            createdBy: this.#createdBy.toJson(),
+        };
+    }
 }
 
 module.exports = Comment;

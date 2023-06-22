@@ -27,6 +27,14 @@ class Tags{
     setDescription(description) {
         this.#description = description;
     }
+
+    // Jsonifies the fields of the class
+    toJson(){
+        return {
+            name: this.#name,
+            description: this.#description,
+        };
+    }
 }
 
 module.exports = Tags
