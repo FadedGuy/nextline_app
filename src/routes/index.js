@@ -34,44 +34,41 @@ router.get('/', function(req, res, next) {
 
 /**
  * GET
- * Brief information of all homeworks, public and those of the user
+ * Brief information of homeworks
+ * If username is provided, includes the ones owned by user and shared with
+ * If no username is provided, shows only public homeworks
  */
 router.get('/getBriefInformation', (req, res) => {
-  console.log("Yes");
   let username = req.query.username;
-  let query;
+  let query = '';
+
   if(username === ''){
-    // const query = `
-    //   SELECT homework.*
-    //   FROM homework
-    //   LEFT JOIN homework_shared_users ON homework_shared_users.homeworkId = homework.id
-    //   LEFT JOIN users ON users.id = homework_shared_users.userId
-    //   WHERE (homework.visibility = 'Public' OR (homework.visibility = 'Shared' AND users.username = ?) OR (homework.visibility = 'Private' AND homework.createdBy = (SELECT id FROM users WHERE username = ?)));
-    // `;
     query = `
-      SELECT *
-      FROM homework;
+      SELECT hw.title, hw.description, hw.visibility, hw.id
+      FROM homework hw
+      WHERE hw.visibility = 'Public';
     `;
   }
   else{
+    // Can reduce the amount of left join's done
     query = `
-      SELECT homework.*
-      FROM homework
-      LEFT JOIN homework_shared_users ON homework_shared_users.homeworkId = homework.id
-      LEFT JOIN users ON users.id = homework.createdBy
-      WHERE (homework.visibility = 'Public'
-        OR (homework.visibility = 'Shared'
-          AND EXISTS (SELECT 1 FROM homework_shared_users WHERE homework_shared_users.homeworkId = homework.id AND users.username = '${username}'))
-        OR (homework.visibility = 'Private'
-          AND homework.createdBy = (SELECT id FROM users WHERE username = '${username}'))
+      SELECT DISTINCT hw.title, hw.description, hw.visibility, hw.id 
+      FROM homework hw
+      LEFT JOIN homework_shared_users ON homework_shared_users.homeworkId = hw.id
+      LEFT JOIN users ON users.id = hw.createdBy
+      WHERE (hw.visibility = 'Public'
+        OR (hw.visibility = 'Shared'
+          AND EXISTS (SELECT 1 FROM homework_shared_users WHERE homework_shared_users.homeworkId = hw.id AND users.username = '${username}'))
+        OR (hw.visibility = 'Private'
+          AND hw.createdBy = (SELECT id FROM users WHERE username = '${username}'))
       );
     `;
   }
-
+  
   pool.query(query, (error, results) => {
     if(error){
       console.error("Unable to run query: ", error);
-      res.send('Unable to execute query');
+      res.status(400).send('Unable to execute query');
     }
     else{
       const jsonResult = JSON.stringify(results);
@@ -79,7 +76,52 @@ router.get('/getBriefInformation', (req, res) => {
       res.send(jsonResult);
     }
   })
+});
+
+
+/**
+ * GET
+ * All information about a homework given an id
+ */
+router.get('/getAllInformation', (req, res) => {
+  let hwId = req.query.id;
+  if(!hwId){
+    res.status(400).send('Unable to run query');
+  }
   
+  query = `
+    SELECT
+      hw.*,
+      hsu.userId,
+      GROUP_CONCAT(c.content SEPARATOR '\n') AS comments
+    FROM
+      homework hw
+    LEFT JOIN
+      homework_shared_users hsu ON hsu.homeworkId = hw.id
+    LEFT JOIN
+      homework_tags ht ON ht.homeworkId = hw.id
+    LEFT JOIN
+      tag t ON t.id = ht.tagId
+    LEFT JOIN
+      comments c ON c.homeworkId = hw.id
+    WHERE
+      hw.id = ${parseInt(hwId)}
+      AND (hw.visibility <> 'Shared' OR (hw.visibility = 'Shared' AND hsu.userId IS NOT NULL))
+    GROUP BY
+      hw.id, hsu.userId;
+  `;
+
+  pool.query(query, (error, results) => {
+    if(error){
+      console.error("Unable to run query: ", error);
+      res.status(400).send('Unable to execute query');
+    }
+    else{
+      const jsonResult = JSON.stringify(results);
+      console.log(jsonResult);
+      res.send(jsonResult);
+    }
+  });
 });
 
 module.exports = router;

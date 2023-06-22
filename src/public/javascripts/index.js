@@ -18,11 +18,11 @@ function handleButtonClick(action){
     }
 }
 
-async function fetchBriefInformation(username){
+async function fetchInformation(uri){
     try{
-        const response = await fetch(`/getBriefInformation?username=${username.value}`);
+        const response = await fetch(uri);
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         return data;
     } catch(err){
         console.log(err);
@@ -30,25 +30,104 @@ async function fetchBriefInformation(username){
     }
 }
 
-function briefInformation(){
-    console.log("brief information!");
-    const res = fetchBriefInformation(username);
+async function briefInformation(){
+    const res = await fetchInformation(`/getBriefInformation?username=${username.value}`);
     if(res === undefined){
-        responseLabel.textContent = "Error processing query";
+        responseLabel.textContent = `Error processing query`;
         return;
     }
 
-    responseLabel.textContent = res;
-    console.log(res);
+    responseLabel.textContent = `Successful request with ${res.length} elements`;
+
+    const cardsContainer = document.getElementById('cardsContainer');
+    cardsContainer.innerHTML = '';
+    let sharedWith = '';
+
+    // Create a card for each element
+    res.forEach(hw => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+
+        card.innerHTML = `
+            <i>ID: ${hw.id}</i>
+            <p><b> Title: ${hw.title} </b></p>
+            <p> Description: ${hw.description} </p>
+            <p> Visibility: ${hw.visibility} </p>
+        `;
+
+        cardsContainer.appendChild(card);
+    })
+    console.log(JSON.stringify(res));
 }
 
-function allInformation(){
+async function allInformation(){
     const hwId = document.getElementById('hwId').value;
-    
     if(hwId === ''){
         responseLabel.textContent = "No id provided!"
         return;
     }
     
-    console.log(hwId);
+    const res = await fetchInformation(`/getAllInformation?id=${hwId}`)
+    if(res === undefined){
+        responseLabel.textContent = `Error processing query`;
+        return;
+    }
+
+    responseLabel.textContent = `Successful request with hwId ${hwId}`;
+
+    // Reduce queries if visibility is shared, join userId
+    let mergedSharedWith = res.reduce((acc, obj) => {
+        const existing = acc.find(item => item.id === obj.id);
+        if(existing){
+            existing.userId.push(obj.userId);
+        } 
+        else{
+            obj.userId = [obj.userId];
+            acc.push(obj);
+        }
+        return acc;
+    }, []);
+    mergedSharedWith = mergedSharedWith[0];
+
+    // Verifications for optional fields
+    const sharedWith = mergedSharedWith.visibility !== 'Shared' ? 
+                        '' : `<p> Shared with: ${mergedSharedWith.userId} </p>`;
+    const responsible = mergedSharedWith.responsible === null ? 
+                    '' : `<p> Responsible id: ${mergedSharedWith.responsible} </p>`;
+    const tagNames = mergedSharedWith.tagNames === undefined ? 
+                        '' : `<p> Tags: ${mergedSharedWith.tagNames} </p>`;
+    const file = mergedSharedWith.file === null ? 
+                 '' : `<p> File: ${mergedSharedWith.file}</p>`;
+       
+    let comments = '';
+    if(mergedSharedWith.comments){
+        comments = 'Comments: <ul>';
+        mergedSharedWith.comments.split('\n').forEach(val => {
+            comments += `<li> ${val} </li>`
+        })
+        comments += '</ul>';
+    }
+
+    const cardsContainer = document.getElementById('cardsContainer');
+    cardsContainer.innerHTML = '';
+
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.innerHTML = `
+        <i>ID: ${mergedSharedWith.id}</i>
+        <p><b> Title: ${mergedSharedWith.title} </b></p>
+        <p> Description: ${mergedSharedWith.description} </p>
+        <p> Visibility: ${mergedSharedWith.visibility} </p>
+        <p> Due Date: ${Date(mergedSharedWith.dueDate)} </p>
+        <p> Owner id: ${mergedSharedWith.createdBy} </p>
+        ${sharedWith}
+        ${responsible}
+        ${tagNames}
+        ${comments}
+        ${file}
+
+    `;
+    cardsContainer.appendChild(card);
+
+    console.log(mergedSharedWith);
 }

@@ -14,9 +14,10 @@ block content
       button(type="button" onclick="handleButtonClick('allInformation')") Click here
       input(type="number" placeholder="Hw ID" id="hwId")
 
-
-
   div(class="responseDiv")
     label(for="responseLabel") Response from latest API call: 
     span#responseLabel #{response}
+
+  div(id="cardsContainer")
+
   script(src="./javascripts/index.js")

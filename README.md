@@ -12,6 +12,7 @@ add file support in frontend
 Change console.error in type verification for throw error and handle
 Can a comment be eliminated?
 Add trigger to also set filetype along with file if it is the case in mysql
+Optimize queries
 
 ISSUES:
 Comment createdBy user is shown as Object and not at User.toJson()

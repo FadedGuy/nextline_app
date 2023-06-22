@@ -1,8 +1,6 @@
 const User = require('./User')
 const Comment = require('./Comment')
 const Tags = require('./Tags');
-const { use } = require('../routes');
-
 // Using E at the start denotes an enumaration
 /**
  * Enumeration that defines the possible completion status of a homework

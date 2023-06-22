@@ -57,6 +57,7 @@ INSERT INTO homework(title, description, completionStatus, dueDate, visibility, 
 INSERT INTO homework(title, description, completionStatus, dueDate, visibility, createdBy, responsible) VALUES ('Chem Test', 'This is the second test for chemistry', 'Pending', '2023-06-18', 'Shared', 1, 3);
 INSERT INTO homework(title, description, completionStatus, dueDate, visibility, createdBy) VALUES ('Math Questions', 'P.1 Ex.15 Solve', 'Completed', '2023-06-15', 'Private', 2);
 INSERT INTO homework(title, description, completionStatus, dueDate, visibility, createdBy) VALUES ('Biology Test', 'This is the first test for biology', 'Pending', '2023-06-19', 'Private', 3);
+INSERT INTO homework(title, description, completionStatus, dueDate, visibility, createdBy) VALUES ("Public Forum", "Do everything for the public forum", "Pending", "2023-05-20", 'Public', 2);
 
 -- Create the table to establish an N-N relation between users and homeworks for sharedwith field
 CREATE TABLE homework_shared_users (
@@ -99,3 +100,4 @@ CREATE TABLE comments (
 INSERT INTO comments (content, createdAt, createdBy, homeworkId) VALUES ('First here!', '2023-06-12', 1, 1);
 INSERT INTO comments (content, createdAt, createdBy, homeworkId) VALUES ('Second also', '2023-06-15', 1, 2);
 INSERT INTO comments (content, createdAt, createdBy, homeworkId) VALUES ('They beat me!', '2023-06-15', 2, 4);
+INSERT INTO comments (content, createdAt, createdBy, homeworkId) VALUES ('I wont do it', '2023-06-12', 2, 2);
