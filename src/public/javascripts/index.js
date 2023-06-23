@@ -1,26 +1,15 @@
 const responseLabel = document.getElementById('responseLabel');
 const username = document.getElementById('username');
 
-// Override submit and prevent redirection
-document.getElementById('hwForm').addEventListener('submit', function(event){
-    event.preventDefault();
-    const form = document.getElementById('hwForm');
-    const formData = new FormData(form);
-
-    fetch('/postHw', {method: 'POST', body: formData, headers:{'Content-Type':'application/x-www-form-urlencoded'}});
-
-    return false;
-});
-
 // Main handler for button click
-function handleButtonClick(action){
+function handleButtonClick(action, mod=0){
     responseLabel.textContent = "";
     switch(action){
         case 'briefInformation':
             briefInformation();
             break;
         case 'allInformation':
-            allInformation();
+            allInformation(mod);
             break;
         case 'deleteHw':
             deleteHw();
@@ -85,13 +74,72 @@ async function briefInformation(){
     console.log(JSON.stringify(res));
 }
 
-async function allInformation(){
+async function allInformationDisplay(res){
+    // Verifications for optional fields
+    const sharedWith = res.visibility !== 'Shared' ? 
+                        '' : `<p> Shared with: ${res.userId} </p>`;
+    const responsible = res.responsible === null ? 
+                    '' : `<p> Responsible id: ${res.responsible} </p>`;
+    const tagNames = res.tagNames === undefined ? 
+                        '' : `<p> Tags: ${res.tagNames} </p>`;
+    const file = res.file === null ? 
+                 '' : `<p> File: ${res.file}</p>`;
+       
+    let comments = '';
+    if(res.comments){
+        comments = 'Comments: <ul>';
+        res.comments.split('\n').forEach(val => {
+            comments += `<li> ${val} </li>`
+        })
+        comments += '</ul>';
+    }
+
+    const cardsContainer = document.getElementById('cardsContainer');
+    cardsContainer.innerHTML = '';
+
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.innerHTML = `
+        <i>ID: ${res.id}</i>
+        <p><b> Title: ${res.title} </b></p>
+        <p> Description: ${res.description} </p>
+        <p> Visibility: ${res.visibility} </p>
+        <p> Due Date: ${Date(res.dueDate)} </p>
+        <p> Owner id: ${res.createdBy} </p>
+        ${sharedWith}
+        ${responsible}
+        ${tagNames}
+        ${comments}
+        ${file}
+
+    `;
+    cardsContainer.appendChild(card);
+
+    console.log(res);
+}
+
+async function allInformationForm(id, res){
+    document.getElementById('idEdit').value = id;
+    document.getElementById('titleEdit').value = res.title || "";
+    document.getElementById('descriptionEdit').value = res.description || "";
+    document.getElementById('completionStatusEdit').value = res.completionStatus || "";
+    document.getElementById('dueDateEdit').value = res.dueDate.split('T')[0] || "1970-01-01";
+    document.getElementById('visibilityEdit').value = res.visibility || "";
+    document.getElementById('sharedWithEdit').value = res.sharedWith || "";
+    document.getElementById('commentsEdit').value = res.comments || "";
+    document.getElementById('createdByEdit').value = res.createdBy || "";
+    document.getElementById('responsibleEdit').value = res.responsible || "";
+    document.getElementById('tagsEdit').value = res.tags || "";
+    document.getElementById('fileEdit').value = res.file || "";
+}
+
+async function allInformation(mod){
     const hwId = document.getElementById('hwId').value;
     if(hwId === ''){
         responseLabel.textContent = "No id provided!"
         return;
     }
-    
+
     const res = await getInformation(`/getAllInformation?id=${hwId}`)
     if(res === undefined){
         responseLabel.textContent = `Error processing query`;
@@ -114,47 +162,12 @@ async function allInformation(){
     }, []);
     mergedSharedWith = mergedSharedWith[0];
 
-    // Verifications for optional fields
-    const sharedWith = mergedSharedWith.visibility !== 'Shared' ? 
-                        '' : `<p> Shared with: ${mergedSharedWith.userId} </p>`;
-    const responsible = mergedSharedWith.responsible === null ? 
-                    '' : `<p> Responsible id: ${mergedSharedWith.responsible} </p>`;
-    const tagNames = mergedSharedWith.tagNames === undefined ? 
-                        '' : `<p> Tags: ${mergedSharedWith.tagNames} </p>`;
-    const file = mergedSharedWith.file === null ? 
-                 '' : `<p> File: ${mergedSharedWith.file}</p>`;
-       
-    let comments = '';
-    if(mergedSharedWith.comments){
-        comments = 'Comments: <ul>';
-        mergedSharedWith.comments.split('\n').forEach(val => {
-            comments += `<li> ${val} </li>`
-        })
-        comments += '</ul>';
+    if(mod === 0){
+        allInformationDisplay(mergedSharedWith);
+    }   
+    else{
+        allInformationForm(hwId, mergedSharedWith);
     }
-
-    const cardsContainer = document.getElementById('cardsContainer');
-    cardsContainer.innerHTML = '';
-
-    const card = document.createElement('div');
-    card.classList.add('card');
-    card.innerHTML = `
-        <i>ID: ${mergedSharedWith.id}</i>
-        <p><b> Title: ${mergedSharedWith.title} </b></p>
-        <p> Description: ${mergedSharedWith.description} </p>
-        <p> Visibility: ${mergedSharedWith.visibility} </p>
-        <p> Due Date: ${Date(mergedSharedWith.dueDate)} </p>
-        <p> Owner id: ${mergedSharedWith.createdBy} </p>
-        ${sharedWith}
-        ${responsible}
-        ${tagNames}
-        ${comments}
-        ${file}
-
-    `;
-    cardsContainer.appendChild(card);
-
-    console.log(mergedSharedWith);
 }
 
 async function deleteHw(){

@@ -1,0 +1,45 @@
+form(id="hwForm" action="/changeHw" method="POST")
+  input(type="hidden" name="_method" value="PUT")
+  label(for="idEdit") Id: 
+  input(type="number" id="idEdit" name="id" disabled)
+
+  label(for="title") Title:
+  input(type="text" id="titleEdit" name="title" required)
+
+  label(for="description") Description:
+  textarea(id="descriptionEdit" name="description" required)
+
+  label(for="completionStatus") Completion Status:
+  select(id="completionStatusEdit" name="completionStatus" required)
+    option(value="Pending") Pending
+    option(value="In Progress") In Progress
+    option(value="Completed") Completed
+
+  label(for="dueDate") Due Date:
+  input(type="date" id="dueDateEdit" name="dueDate" required)
+
+  label(for="visibility") Visibility:
+  select(id="visibilityEdit" name="visibility" required)
+    option(value="Public") Public
+    option(value="Private") Private
+    option(value="Shared") Shared
+
+  label(for="sharedWith") Shared With:
+  input(type="text" id="sharedWithEdit" name="sharedWith")
+
+  label(for="comments") Comments:
+  textarea(id="commentsEdit" name="comments")
+
+  label(for="createdBy") Created By:
+  input(type="text" id="createdByEdit" name="createdBy" disabled)
+
+  label(for="responsible") Responsible:
+  input(type="text" id="responsibleEdit" name="responsible")
+
+  label(for="tags") Tags:
+  input(type="text" id="tagsEdit" name="tags")
+
+  label(for="file") File:
+  input(type="file" id="fileEdit" name="file")
+
+  button(type="submit") Submit

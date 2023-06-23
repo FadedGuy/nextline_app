@@ -130,7 +130,6 @@ router.get('/getAllInformation', (req, res) => {
  */
 router.post('/postHw', (req, res) => {
   const { title, description, completionStatus, dueDate, visibility, sharedWith, createdBy, responsible, file } = req.body;
-  console.log(req.body);
   
   const columnValuePairs = [];
   if (title) columnValuePairs.push(`title = '${title}'`);
@@ -144,35 +143,65 @@ router.post('/postHw', (req, res) => {
 
   const query = `INSERT INTO homework SET ${columnValuePairs.join(', ')}`;
 
-  // pool.query(query, (error, results) => {
-  //   if (error) {
-  //     console.error('Unable to run homework query:', error);
-  //     res.status(400).send("Unable to process query");
-  //     return;
-  //   }
+  pool.query(query, (error, results) => {
+    if (error) {
+      console.error('Unable to run homework query:', error);
+      res.status(400).send("Unable to process query");
+      return;
+    }
     
-  //   // If visibility is 'Shared', insert sharedWith if existent
-  //   if (visibility === 'Shared' && sharedWith) {
-  //     const userIds = sharedWith.split(',').map(userId => userId.trim());
+    // If visibility is 'Shared', insert sharedWith if existent
+    if (visibility === 'Shared' && sharedWith) {
+      const userIds = sharedWith.split(',').map(userId => userId.trim());
       
-  //     const sharedUsersValues = userIds.map(userId => `(${results.insertId}, ${userId})`);
+      const sharedUsersValues = userIds.map(userId => `(${results.insertId}, ${userId})`);
       
-  //     const sharedWithQuery = `INSERT INTO homework_shared_users (homeworkId, userId) VALUES ${sharedUsersValues.join(', ')}`;
+      const sharedWithQuery = `INSERT INTO homework_shared_users (homeworkId, userId) VALUES ${sharedUsersValues.join(', ')}`;
       
-  //     pool.query(sharedWithQuery, (error, results) => {
-  //       if (error) {
-  //         console.error('Unable to run shared users query:', error);
-  //       } else {
-  //         console.log('Form submitted successfully');
-  //         res.send("Nice");
-  //       }
-  //     });
-  //   } else {
-  //     console.log('Form submitted successfully');
-  //     res.send("Nice");
-  //   }
-  // });
-  res.send("Buce");
+      pool.query(sharedWithQuery, (error, results) => {
+        if (error) {
+          console.error('Unable to run shared users query:', error);
+        } else {
+          console.log('Form submitted successfully');
+          res.redirect('/');
+        }
+      });
+    } else {
+      console.log('Form submitted successfully');
+      res.redirect('/');
+    }
+  });
+});
+
+/**
+ * PUT
+ * Updates a homework with the given id and information
+ */
+router.post('/changeHw', (req, res) => {
+  const { id, title, description, completionStatus, dueDate, visibility, sharedWith, comments, createdBy, responsible, tags, file } = req.body;
+  console.log(id);
+  query = `
+    UPDATE homework
+    SET title=${title},
+        description=${description},
+        completionStatus=${completionStatus},
+        dueDate=${dueDate},
+        visibility=${visibility},
+        responsible=${responsible},
+        file=${file}
+        
+    WHERE id=${id};`
+
+  pool.query(query, (error, results) => {
+    if (error) {
+      console.error('Unable to run homework query:', error);
+      res.status(400).send("Unable to process query");
+      return;
+    } else {
+      console.log('Form udpated successfully');
+      res.redirect('/');
+    }
+  });
 });
 
 /**

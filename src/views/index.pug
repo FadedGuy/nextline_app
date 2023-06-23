@@ -21,6 +21,10 @@ block content
     div.actionDiv
       p POST New Homework
       include hwForm.pug
+    div.actionDiv
+      p POST Edit HW 
+      button(type="button" onclick="handleButtonClick('allInformation', 1)") Retrieve HW
+      include hwFormEdit.pug 
       
   div(class="responseDiv")
     label(for="responseLabel") Response from latest API call: 
